@@ -8,6 +8,13 @@
       "when": 1786573345334,
       "tag": "0000_many_invisible_woman",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1786609000000,
+      "tag": "0001_seed_cms_content",
+      "breakpoints": true
     }
   ]
 }
