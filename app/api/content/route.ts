@@ -1,17 +1,12 @@
 import { and, desc, eq } from "drizzle-orm";
 import { ensureContentSchema, getDb } from "../../../db";
 import { contentEntries } from "../../../db/schema";
-import { getChatGPTUser } from "../../chatgpt-auth";
-
-async function canWrite(request: Request) {
-  if (new URL(request.url).hostname === "localhost") return true;
-  return Boolean(await getChatGPTUser());
-}
+import { canManage } from "../../admin-access";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const type = url.searchParams.get("type") as "project" | "post" | "support" | null;
-  const admin = url.searchParams.get("admin") === "1" && await canWrite(request);
+  const admin = url.searchParams.get("admin") === "1" && await canManage(request);
   try {
     await ensureContentSchema();
     const db = getDb();
@@ -22,7 +17,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (!await canWrite(request)) return Response.json({ error: "Sign in required" }, { status: 401 });
+  if (!await canManage(request)) return Response.json({ error: "Owner access required" }, { status: 403 });
   const input = await request.json() as Record<string, string | number>;
   const title = String(input.title || "").trim();
   const slug = String(input.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")).trim();
@@ -35,7 +30,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!await canWrite(request)) return Response.json({ error: "Sign in required" }, { status: 401 });
+  if (!await canManage(request)) return Response.json({ error: "Owner access required" }, { status: 403 });
   const id = Number(new URL(request.url).searchParams.get("id"));
   if (!id) return Response.json({ error: "Valid id required" }, { status: 400 });
   await ensureContentSchema(); await getDb().delete(contentEntries).where(eq(contentEntries.id, id));

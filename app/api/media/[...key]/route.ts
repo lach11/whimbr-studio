@@ -1,0 +1,2 @@
+import { env } from "cloudflare:workers";
+export async function GET(_request:Request,{params}:{params:Promise<{key:string[]}>}){const {key}=await params;const object=await env.MEDIA.get(key.join("/"));if(!object)return new Response("Not found",{status:404});const headers=new Headers();object.writeHttpMetadata(headers);headers.set("etag",object.httpEtag);headers.set("x-content-type-options","nosniff");headers.set("content-security-policy","default-src 'none'; img-src 'self'");return new Response(object.body,{headers})}
