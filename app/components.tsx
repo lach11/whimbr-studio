@@ -3,24 +3,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-export function Logo() { return <Link href="/" className="logo" aria-label="Whimbr Studio home"><span className="logo-mark" aria-hidden="true">W</span><span>whimbr <small>Studio</small><em>Curious tools, thoughtfully made.</em></span></Link>; }
-export function Header() {
-  const [open, setOpen] = useState(false);
-  const pathname = usePathname();
-  const links = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/projects", label: "Projects" },
-    { href: "/blog", label: "Blog" },
-    { href: "/support", label: "Support", cta: true },
-  ];
-  const isActive = (href: string) => href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
-
-  return <header className="site-header"><div className="shell header-inner"><Logo/><button className="menu-button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="main-nav"><span className="sr-only">Toggle menu</span><span/><span/></button><nav id="main-nav" className={open ? "nav open" : "nav"} aria-label="Main navigation">{links.map(link => {
-    const active = isActive(link.href);
-    return <Link key={link.href} href={link.href} aria-current={active ? "page" : undefined} className={`${link.cta ? "button small" : ""}${active ? " active" : ""}`.trim()} onClick={() => setOpen(false)}>{link.label}</Link>;
-  })}</nav></div></header>;
-}
-export function Footer() { return <footer><div className="shell footer-grid"><div><Logo/><p>Independent experiments in software, electronics, data and learning.</p></div><div><strong>Explore</strong><Link href="/projects">Projects</Link><Link href="/blog">Notes</Link><Link href="/support">Support</Link></div><div><strong>Studio</strong><Link href="/about">About</Link><a href="mailto:hello@whimbr.studio">hello@whimbr.studio</a></div></div><div className="shell fineprint"><span>© {new Date().getFullYear()} Whimbr Studio</span><span>Made with curiosity in Australia.</span></div></footer>; }
-export function Page({ children }: { children: React.ReactNode }) { return <><Header/><main>{children}</main><Footer/></>; }
-export function Arrow() { return <span aria-hidden="true">↗</span>; }
+export function Logo(){return <Link href="/" className="cr-logo" aria-label="Whimbr Studio home"><span className="cr-logo-mark">W</span><span><b>whimbr <i>Studio</i></b><small>Helpful tools, simplifying your life.</small></span></Link>}
+export function Header(){const [open,setOpen]=useState(false);const path=usePathname();const links=[['/','Home'],['/about','About'],['/projects','Projects'],['/blog','Blog'],['/support','Support'],['/contact','Contact']];const active=(href:string)=>href==='/'?path==='/':path===href||path.startsWith(href+'/');return <header className="cr-header"><div className="cr-container cr-header-inner"><Logo/><button className="cr-menu-button" onClick={()=>setOpen(!open)} aria-expanded={open} aria-controls="main-nav">Menu</button><nav id="main-nav" className={open?'cr-nav open':'cr-nav'} aria-label="Main navigation">{links.map(([href,label])=><Link key={href} href={href} className={active(href)?'active':''} aria-current={active(href)?'page':undefined} onClick={()=>setOpen(false)}>{label}</Link>)}</nav></div><div className="cr-header-rule"/></header>}
+export function Footer(){return <footer className="cr-footer"><div className="cr-container cr-footer-grid"><section><h3>About Whimbr</h3><p>An independent Australian maker studio creating practical software, electronics projects, data stories and learning resources.</p></section><section><h3>Explore</h3><Link href="/projects">Projects</Link><Link href="/blog">Blog</Link><Link href="/about">About the studio</Link><Link href="/support">Support</Link></section><section><h3>Building in public</h3><p>Follow the experiments, lessons and useful things taking shape inside the studio.</p><Link href="/blog">Read the latest notes →</Link></section><section><h3>Get in touch</h3><p>Questions, ideas and thoughtful feedback are always welcome.</p><a href="mailto:hello@whimbr.studio">hello@whimbr.studio</a><Link href="/contact">Contact form →</Link></section></div><div className="cr-copyright"><div className="cr-container"><span>© {new Date().getFullYear()} Whimbr Studio</span><span>Made with curiosity in Australia.</span></div></div></footer>}
+export function Page({children}:{children:React.ReactNode}){return <><Header/><main>{children}</main><Footer/></>}
+export function PageTitle({children,muted}:{children:React.ReactNode;muted?:string}){return <div className="cr-page-title"><h1>{children}{muted&&<> / <span>{muted}</span></>}</h1><i/></div>}
+export function SectionTitle({children}:{children:React.ReactNode}){return <div className="cr-section-title"><h2>{children}</h2><i/></div>}
+export function Arrow(){return <span aria-hidden="true">→</span>}
