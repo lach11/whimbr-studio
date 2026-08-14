@@ -23,10 +23,17 @@ export async function POST(request: Request) {
   const slug = String(input.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")).trim();
   if (!title || !slug || !["project", "post", "support", "map", "course"].includes(String(input.type))) return Response.json({ error: "Title, type and slug are required" }, { status: 400 });
   const values = { type: input.type as "project"|"post"|"support"|"map"|"course", slug, title, summary: String(input.summary || ""), body: String(input.body || ""), category: String(input.category || "General"), imageUrl: String(input.imageUrl || ""), linkUrl: String(input.linkUrl || ""), status: input.status === "published" ? "published" as const : "draft" as const, publishedAt: input.status === "published" ? new Date() : null, updatedAt: new Date() };
-  await ensureContentSchema(); const db = getDb();
-  const id = Number(input.id || 0);
-  const [entry] = id ? await db.update(contentEntries).set(values).where(eq(contentEntries.id, id)).returning() : await db.insert(contentEntries).values(values).returning();
-  return Response.json({ entry });
+  try {
+    await ensureContentSchema(); const db = getDb();
+    const id = Number(input.id || 0);
+    const [existing] = await db.select({id:contentEntries.id}).from(contentEntries).where(eq(contentEntries.slug,slug)).limit(1);
+    if (existing && existing.id !== id) return Response.json({error:"That slug is already used by another item. Please choose a different slug."},{status:409});
+    const [entry] = id ? await db.update(contentEntries).set(values).where(eq(contentEntries.id, id)).returning() : await db.insert(contentEntries).values(values).returning();
+    return Response.json({ entry });
+  } catch (error) {
+    console.error("Content save failed", error);
+    return Response.json({error:"The content could not be saved. Please try again."},{status:500});
+  }
 }
 
 export async function DELETE(request: Request) {
