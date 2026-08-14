@@ -1,0 +1,6 @@
+INSERT OR IGNORE INTO `content_entries` (`type`,`slug`,`title`,`summary`,`body`,`category`,`image_url`,`link_url`,`status`,`published_at`,`updated_at`) VALUES
+('faq','faq-where-should-i-start','Where should I start?','General guidance','Choose your product from the support categories. For anything else, send a note with the device or browser you are using.','Getting started','','','published',1786665600,1786665600),
+('faq','faq-report-a-bug','How do I report a bug?','Bug reports','Include what happened, what you expected, and any steps that reliably reproduce the issue.','Troubleshooting','','','published',1786665600,1786665600),
+('faq','faq-information-to-include','What information should I include?','Support requests','Include the product name, version if known, device or operating system, and screenshots without sensitive information.','Troubleshooting','','','published',1786665600,1786665600),
+('faq','faq-privacy','How is my privacy handled?','Privacy','Whimbr products are designed to collect as little information as possible. Product-specific details accompany each release.','Privacy','','','published',1786665600,1786665600),
+('faq','faq-feature-suggestion','Can I suggest a feature?','Feedback','Absolutely. Practical feedback is welcome and helps shape what gets built next.','Feedback','','','published',1786665600,1786665600);

@@ -2,7 +2,7 @@ import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const contentEntries = sqliteTable("content_entries", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  type: text("type", { enum: ["project", "post", "support", "map", "course"] }).notNull(),
+  type: text("type", { enum: ["project", "post", "support", "map", "course", "faq"] }).notNull(),
   slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
   summary: text("summary").notNull().default(""),

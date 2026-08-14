@@ -5,7 +5,7 @@ import { canManage } from "../../admin-access";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const type = url.searchParams.get("type") as "project" | "post" | "support" | "map" | "course" | null;
+  const type = url.searchParams.get("type") as "project" | "post" | "support" | "map" | "course" | "faq" | null;
   const admin = url.searchParams.get("admin") === "1" && await canManage(request);
   try {
     await ensureContentSchema();
@@ -21,8 +21,8 @@ export async function POST(request: Request) {
   const input = await request.json() as Record<string, string | number>;
   const title = String(input.title || "").trim();
   const slug = String(input.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")).trim();
-  if (!title || !slug || !["project", "post", "support", "map", "course"].includes(String(input.type))) return Response.json({ error: "Title, type and slug are required" }, { status: 400 });
-  const values = { type: input.type as "project"|"post"|"support"|"map"|"course", slug, title, summary: String(input.summary || ""), body: String(input.body || ""), category: String(input.category || "General"), imageUrl: String(input.imageUrl || ""), linkUrl: String(input.linkUrl || ""), status: input.status === "published" ? "published" as const : "draft" as const, publishedAt: input.status === "published" ? new Date() : null, updatedAt: new Date() };
+  if (!title || !slug || !["project", "post", "support", "map", "course", "faq"].includes(String(input.type))) return Response.json({ error: "Title, type and slug are required" }, { status: 400 });
+  const values = { type: input.type as "project"|"post"|"support"|"map"|"course"|"faq", slug, title, summary: String(input.summary || ""), body: String(input.body || ""), category: String(input.category || "General"), imageUrl: String(input.imageUrl || ""), linkUrl: String(input.linkUrl || ""), status: input.status === "published" ? "published" as const : "draft" as const, publishedAt: input.status === "published" ? new Date() : null, updatedAt: new Date() };
   try {
     await ensureContentSchema(); const db = getDb();
     const id = Number(input.id || 0);
