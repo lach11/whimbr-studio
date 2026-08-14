@@ -1,5 +1,3 @@
-import {Page,PageTitle} from "../components";
-import {MapBrowser} from "../ContentDiscovery";
-import {getPublished} from "../content-db";
-export const metadata={title:"Data Maps | Whimbr Studio",description:"Explore Whimbr Studio data maps and the stories behind how they were made."};
-export default async function Maps(){const maps=await getPublished("map");return <Page><div className="cr-container cr-page"><PageTitle>Data Maps</PageTitle><p className="cr-intro">Visual explorations that turn public data into useful, understandable stories.</p><MapBrowser items={maps}/></div></Page>}
+import {Page,PageTitle} from "../components";import {MapBrowser} from "../ContentDiscovery";import {getPublished} from "../content-db";import {getPageContent} from "../../db/page-content";
+export const dynamic="force-dynamic";export const metadata={title:"Data Maps | Whimbr Studio",description:"Explore Whimbr Studio data maps and the stories behind how they were made."};
+export default async function Maps(){const [maps,content]=await Promise.all([getPublished("map"),getPageContent("maps")]);return <Page><div className="cr-container cr-page"><PageTitle>{content.pageTitle}</PageTitle><p className="cr-intro">{content.intro}</p><MapBrowser items={maps}/></div></Page>}

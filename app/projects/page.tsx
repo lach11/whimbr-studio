@@ -1,3 +1,3 @@
-import {Page,PageTitle} from "../components";import {getPublished} from "../content-db";import {ProjectBrowser} from "../ContentDiscovery";
-export const metadata={title:'Projects | Whimbr Studio',description:'Software, electronics, data visualisations and learning projects by Whimbr Studio.'};export const dynamic='force-dynamic';
-export default async function Projects(){const all=await getPublished('project');return <Page><div className="cr-container cr-page"><PageTitle>Projects</PageTitle><p className="cr-intro">Apps, experiments, tools and creations. Some are small, some are ambitious, all are built with curiosity.</p><ProjectBrowser items={all}/></div></Page>}
+import {Page,PageTitle} from "../components";import {getPublished} from "../content-db";import {ProjectBrowser} from "../ContentDiscovery";import {getPageContent} from "../../db/page-content";
+export const metadata={title:"Projects | Whimbr Studio",description:"Software, electronics, data visualisations and learning projects by Whimbr Studio."};export const dynamic="force-dynamic";
+export default async function Projects(){const [all,content]=await Promise.all([getPublished("project"),getPageContent("projects")]);return <Page><div className="cr-container cr-page"><PageTitle>{content.pageTitle}</PageTitle><p className="cr-intro">{content.intro}</p><ProjectBrowser items={all}/></div></Page>}

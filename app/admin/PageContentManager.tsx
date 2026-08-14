@@ -1,0 +1,10 @@
+"use client";
+import {useEffect,useState} from "react";
+import {fieldLabel,pageContentDefaults,pageLabels,type PageContent,type PageKey} from "../page-content-config";
+const pages=Object.keys(pageContentDefaults) as PageKey[];
+export default function PageContentManager(){
+ const [page,setPage]=useState<PageKey>("home"),[content,setContent]=useState<PageContent>({...pageContentDefaults.home}),[message,setMessage]=useState(""),[saving,setSaving]=useState(false);
+ useEffect(()=>{fetch(`/api/page-content?page=${page}`).then(response=>response.json()).then(data=>{setContent(data.content||{...pageContentDefaults[page]});setMessage("")})},[page]);
+ async function save(){setSaving(true);setMessage("Saving…");const response=await fetch("/api/page-content",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({page,content})});const data=await response.json();setMessage(response.ok?`${pageLabels[page]} page content saved.`:data.error||"Could not save.");setSaving(false)}
+ return <div className="cms-page-layout"><aside>{pages.map(item=><button className={page===item?"active":""} key={item} onClick={()=>setPage(item)}>{pageLabels[item]}</button>)}</aside><section className="cms-editor-card"><div className="cms-card-head"><div><span>Page content</span><h2>{pageLabels[page]} page</h2></div><button className="cms-primary" disabled={saving} onClick={save}>{saving?"Saving…":"Save page content"}</button></div><div className="cms-form-body"><p className="cms-page-note">These fields control wording only. The page layout and styling remain protected.</p>{Object.keys(pageContentDefaults[page]).map(key=><label key={key}>{fieldLabel(key)}{content[key]?.length>90?<textarea rows={4} value={content[key]||""} onChange={event=>setContent({...content,[key]:event.target.value})}/>:<input value={content[key]||""} onChange={event=>setContent({...content,[key]:event.target.value})}/>}</label>)}<div className="cms-editor-foot"><span>{message}</span></div></div></section></div>
+}
